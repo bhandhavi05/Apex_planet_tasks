@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Product Listing with Filtering & Sorting</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f4f7fa;
+    color: #333;
+  }
+  header {
+    background: #2575fc;
+    color: white;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(37,117,252,0.3);
+  }
+  #container {
+    display: flex;
+    max-width: 1200px;
+    margin: 2rem auto;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  #filters {
+    flex: 0 0 280px;
+    background: white;
+    padding: 1.5rem 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 1rem;
+  }
+  #filters h2 {
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #2575fc;
+    border-bottom: 2px solid #2575fc;
+    padding-bottom: 0.25rem;
+  }
+  .filter-group {
+    margin-bottom: 1.5rem;
+  }
+  .filter-group label {
+    display: block;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .filter-group input[type="checkbox"] {
+    margin-right: 0.7rem;
+    cursor: pointer;
+  }
+  #price-range {
+    width: 100%;
+  }
+  #price-value {
+    font-weight: 600;
+    color: #444;
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+  #sort-by {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #sort-by:focus {
+    border-color: #2575fc;
+  }
+  #product-list {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+    gap: 1.8rem;
+  }
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+  .product-name {
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin: 0 0 0.5rem 0;
+  }
+  .product-category {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+  .product-price {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #2575fc;
+    margin-bottom: 0.7rem;
+  }
+  .product-rating {
+    margin-top: auto;
+    color: #fbc02d;
+    font-weight: 700;
+  }
+  .star {
+    display: inline-block;
+    color: #fbc02d;
+    font-size: 1rem;
+    line-height: 1;
+    margin-right: 2px;
+  }
+  .star.inactive {
+    color: #ddd;
+  }
+  @media (max-width: 736px) {
+    #container {
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 1rem;
+    }
+    #filters {
+      position: static;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    #product-list {
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      gap: 1.2rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>Product Listing</header>
+<div id="container">
+  <aside id="filters" aria-label="Filter and Sort Products">
+    <div class="filter-group">
+      <h2>Category</h2>
+      <label><input type="checkbox" value="Electronics" /> Electronics</label>
+      <label><input type="checkbox" value="Books" /> Books</label>
+      <label><input type="checkbox" value="Clothing" /> Clothing</label>
+      <label><input type="checkbox" value="Furniture" /> Furniture</label>
+    </div>
+    <div class="filter-group">
+      <h2>Max Price</h2>
+      <input type="range" id="price-range" min="0" max="1000" step="10" value="1000" aria-label="Maximum price range" />
+      <div id="price-value">$1000</div>
+    </div>
+    <div class="filter-group">
+      <h2>Sort By Rating</h2>
+      <select id="sort-by" aria-label="Sort products by rating">
+        <option value="desc">Highest to Lowest</option>
+        <option value="asc">Lowest to Highest</option>
+      </select>
+    </div>
+  </aside>
+  <section id="product-list" aria-live="polite" aria-relevant="additions removals"></section>
+</div>
+
+<script>
+  (() => {
+    const products = [
+      {id:1, name:"Wireless Headphones", category:"Electronics", price:299, rating:4.5},
+      {id:2, name:"Modern Bookshelf", category:"Furniture", price:120, rating:4.2},
+      {id:3, name:"Cotton T-Shirt", category:"Clothing", price:25, rating:3.8},
+      {id:4, name:"Smartphone", category:"Electronics", price:699, rating:4.7},
+      {id:5, name:"Fantasy Novel", category:"Books", price:15, rating:4.1},
+      {id:6, name:"Leather Jacket", category:"Clothing", price:150, rating:4.6},
+      {id:7, name:"Office Chair", category:"Furniture", price:200, rating:4.0},
+      {id:8, name:"Bluetooth Speaker", category:"Electronics", price:180, rating:4.4},
+      {id:9, name:"Cookbook", category:"Books", price:30, rating:3.9},
+      {id:10, name:"Casual Sneakers", category:"Clothing", price:65, rating:4.3},
+      {id:11, name:"Wooden Coffee Table", category:"Furniture", price:349, rating:4.5},
+      {id:12, name:"E-reader", category:"Electronics", price:129, rating:4.2}
+    ];
+
+    const productListEl = document.getElementById('product-list');
+    const categoryCheckboxes = Array.from(document.querySelectorAll('#filters input[type="checkbox"]'));
+    const priceRangeInput = document.getElementById('price-range');
+    const priceValueEl = document.getElementById('price-value');
+    const sortBySelect = document.getElementById('sort-by');
+
+    function renderStarRating(rating) {
+      const starCount = 5;
+      let html = '';
+      const filledStars = Math.floor(rating);
+      const halfStar = (rating - filledStars) >= 0.5;
+      for(let i = 0; i < filledStars; i++) {
+        html += '<span class="star">&#9733;</span>';
+      }
+      if (halfStar) {
+        html += '<span class="star">&#9733;</span>'; // half star visually same as full for simplicity
+      }
+      const remaining = starCount - filledStars - (halfStar ? 1 : 0);
+      for(let i = 0; i < remaining; i++) {
+        html += '<span class="star inactive">&#9733;</span>';
+      }
+      return html;
+    }
+
+    function renderProducts(productsToRender) {
+      productListEl.innerHTML = '';
+      if (productsToRender.length === 0) {
+        productListEl.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#777; font-style: italic;">No products found matching the criteria.</p>';
+        return;
+      }
+      productsToRender.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'article');
+        card.setAttribute('aria-label', ${product.name}, category: ${product.category}, price $${product.price}, rating ${product.rating});
+
+        card.innerHTML = `
+          <div class="product-name">${product.name}</div>
+          <div class="product-category">${product.category}</div>
+          <div class="product-price">$${product.price.toFixed(2)}</div>
+          <div class="product-rating" aria-label="Rating: ${product.rating} out of 5 stars">${renderStarRating(product.rating)}</div>
+        `;
+        productListEl.appendChild(card);
+      });
+    }
+
+    function getFilteredProducts() {
+      const selectedCategories = categoryCheckboxes.filter(cb => cb.checked).map(cb => cb.value);
+      const maxPrice = parseInt(priceRangeInput.value, 10);
+
+      let filtered = products.filter(product => {
+        const matchCategory = selectedCategories.length ? selectedCategories.includes(product.category) : true;
+        const matchPrice = product.price <= maxPrice;
+        return matchCategory && matchPrice;
+      });
+      return filtered;
+    }
+
+    function applySort(productsToSort) {
+      const sortOrder = sortBySelect.value;
+      if (sortOrder === 'asc') {
+        productsToSort.sort((a, b) => a.rating - b.rating);
+      } else {
+        productsToSort.sort((a, b) => b.rating - a.rating);
+      }
+      return productsToSort;
+    }
+
+    function updateDisplay() {
+      const filtered = getFilteredProducts();
+      const sorted = applySort(filtered);
+      renderProducts(sorted);
+    }
+
+    categoryCheckboxes.forEach(cb => cb.addEventListener('change', updateDisplay));
+    priceRangeInput.addEventListener('input', () => {
+      priceValueEl.textContent = $${priceRangeInput.value};
+      updateDisplay();
+    });
+    sortBySelect.addEventListener('change', updateDisplay);
+
+    // Initial setup
+    priceValueEl.textContent = $${priceRangeInput.value};
+    updateDisplay();
+  })();
+</script>
+</body>
+</html>

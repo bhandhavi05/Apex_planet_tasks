@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            color:rgb(15, 14, 14);
+            font-style: italic;
+    
+        }
+        .quiz-container {
+            width: 80%;
+            margin: auto;
+            background-color: bisque;
+        }
+        .question {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Quiz</h1>
+
+    <div class="quiz-container">
+        <div id="quiz">
+            <p class="question">1. What is the capital of France?</p>
+            <button onclick="checkAnswer(1, 'Paris')">Paris</button>
+            <button onclick="checkAnswer(1, 'London')">London</button>
+            <button onclick="checkAnswer(1, 'Berlin')">Berlin</button>
+            <p id="result1"></p>
+
+            <p class="question">2.What is the national flower of india ?</p>
+            <button onclick="checkAnswer(2, 'rose')">rose</button>
+            <button onclick="checkAnswer(2, 'lotus')"> lotus</button>
+            <button onclick="checkAnswer(2, 'lilly')">lilly</button>
+            <p id="result2"></p>
+
+            <p class="question">3. What is the largest planet in our solar system?</p>
+            <button onclick="checkAnswer(3, 'Jupiter')">Jupiter</button>
+            <button onclick="checkAnswer(3, 'Mars')">Mars</button>
+            <button onclick="checkAnswer(3, 'Earth')">Earth</button>
+            <p id="result3"></p>
+        </div>
+    </div>
+
+    <script>
+        function checkAnswer(questionNumber, userAnswer) {
+            let correctAnswers = {
+                1: "Paris",
+                2: "lotus",
+                3: "Jupiter"
+            };
+
+            let resultElement = document.getElementById(`result${questionNumber}`);
+            if (userAnswer === correctAnswers[questionNumber]) {
+                resultElement.innerText = "Correct!";
+                resultElement.style.color = "green";
+            } else {
+                resultElement.innerText = "Wrong, try again.";
+                resultElement.style.color = "red";
+            }
+        }
+    </script>
+
+</body>
+</html>

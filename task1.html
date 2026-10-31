@@ -1,0 +1,118 @@
+
+
+<!DOCTYPE html>
+<html >
+<head>
+  <title>Simple Styled Webpage</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+      color: #333;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+    }
+
+    header {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      color: #0077ff;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      color: #555;
+      font-weight: 500;
+    }
+
+    main {
+      background-color: rgba(255, 255, 255, 0.9);
+      max-width: 600px;
+      width: 100%;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    main p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: #444;
+    }
+
+    button {
+      background-color: #0077ff;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 119, 255, 0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover,
+    button:focus {
+      background-color: #005fcc;
+      box-shadow: 0 8px 18px rgba(0, 95, 204, 0.7);
+      outline: none;
+    }
+
+    @media (max-width: 400px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      header p, main p {
+        font-size: 1rem;
+      }
+      button {
+        padding: 10px 24px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Simple Stylish Webpage</h1>
+    <p>Learn how to apply colors, fonts, spacing, and layout with CSS</p>
+  </header>
+  <main>
+    <p>This webpage demonstrates simple styling applied with CSS and basic interaction with JavaScript.</p>
+    <button id="alertButton" type="button">Click Me!</button>
+  </main>
+
+  <script>
+    document.getElementById('alertButton').addEventListener('click', function () {
+      alert('Hello! This is a simple alert triggered by clicking the button.');
+    });
+  </script>
+</body>
+</html>
